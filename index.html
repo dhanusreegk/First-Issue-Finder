@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover beginner-friendly GitHub issues and track your open-source journey.">
+  <title>First Issue Finder</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="#" class="brand" data-view="explore">
+      <span class="brand-icon">F</span>
+      <span>First Issue Finder</span>
+    </a>
+
+    <nav class="navigation" aria-label="Main navigation">
+      <button class="nav-link active" data-view="explore">Explore</button>
+      <button class="nav-link" data-view="saved">Saved Issues</button>
+      <button class="nav-link" data-view="dashboard">Dashboard</button>
+      <button class="nav-link" data-view="progress">My Progress</button>
+      <button class="nav-link" data-view="checklist">Before You Start</button>
+    </nav>
+
+    <button id="themeToggle" class="theme-toggle" type="button">
+      Light mode
+    </button>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">YOUR OPEN-SOURCE JOURNEY STARTS HERE</p>
+      <h1>Find your first <span>GitHub issue.</span></h1>
+      <p class="hero-description">
+        Discover beginner-friendly issues, understand why they may suit you,
+        and keep track of your contribution journey.
+      </p>
+    </section>
+
+    <section id="view-explore" class="view">
+      <div class="section-heading">
+        <div>
+          <h2>Explore issues</h2>
+          <p>Find an issue that matches your interests and skills.</p>
+        </div>
+      </div>
+
+      <form id="searchForm" class="filter-panel">
+        <div class="field field-wide">
+          <label for="keyword">Keyword</label>
+          <input id="keyword" type="search"
+            placeholder="e.g. documentation, bug, beginner">
+        </div>
+
+        <div class="field">
+          <label for="language">Programming language</label>
+          <select id="language">
+            <option value="">All languages</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="Python">Python</option>
+            <option value="Java">Java</option>
+            <option value="C++">C++</option>
+            <option value="HTML">HTML</option>
+            <option value="CSS">CSS</option>
+            <option value="TypeScript">TypeScript</option>
+            <option value="Go">Go</option>
+            <option value="Rust">Rust</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="difficulty">Beginner label</label>
+          <select id="difficulty">
+            <option value="beginner">Beginner-friendly</option>
+            <option value="all">Any label</option>
+            <option value="good-first-issue">Good first issue</option>
+            <option value="help-wanted">Help wanted</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="issueState">Issue status</label>
+          <select id="issueState">
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+            <option value="all">All statuses</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sortBy">Sort results</label>
+          <select id="sortBy">
+            <option value="best-match">Best match</option>
+            <option value="updated">Recently updated</option>
+            <option value="comments">Most comments</option>
+            <option value="created">Newest issues</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="repository">Repository (optional)</label>
+          <input id="repository" type="text"
+            placeholder="owner/repository">
+        </div>
+
+        <div class="search-actions">
+          <button class="button primary" type="submit">Search issues</button>
+          <button class="button secondary" id="clearFilters" type="button">
+            Clear filters
+          </button>
+        </div>
+      </form>
+
+      <div class="results-heading">
+        <div>
+          <h3>Matching issues</h3>
+          <p id="resultSummary" aria-live="polite">Search to find issues.</p>
+        </div>
+      </div>
+
+      <div id="issuesContainer" class="issue-grid"></div>
+
+      <div id="loadMoreArea" class="load-more-area hidden">
+        <button id="loadMore" class="button secondary" type="button">
+          Load more issues
+        </button>
+      </div>
+    </section>
+
+    <section id="view-saved" class="view hidden">
+      <div class="section-heading">
+        <div>
+          <h2>Saved issues</h2>
+          <p>Your personal list of issues to explore and work on.</p>
+        </div>
+      </div>
+      <div id="savedContainer" class="issue-grid"></div>
+    </section>
+
+    <section id="view-dashboard" class="view hidden">
+      <div class="section-heading">
+        <div>
+          <h2>Your dashboard</h2>
+          <p>A snapshot of your open-source learning journey.</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-icon">☆</span>
+          <p>Total saved</p>
+          <strong id="statSaved">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">◷</span>
+          <p>Interested / planning</p>
+          <strong id="statPlanning">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">↗</span>
+          <p>In progress</p>
+          <strong id="statWorking">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">✓</span>
+          <p>Completed</p>
+          <strong id="statCompleted">0</strong>
+        </article>
+      </div>
+
+      <div class="panel progress-overview">
+        <h3>Contribution progress</h3>
+        <p id="progressSummary">Save an issue to begin tracking your journey.</p>
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <button class="button secondary" data-view="progress" type="button">
+          View my progress
+        </button>
+      </div>
+    </section>
+
+    <section id="view-progress" class="view hidden">
+      <div class="section-heading">
+        <div>
+          <h2>My progress</h2>
+          <p>Update each saved issue as you move towards contributing.</p>
+        </div>
+      </div>
+
+      <div class="stage-guide">
+        <div><span class="stage-dot interested"></span> Interested</div>
+        <div><span class="stage-dot planning"></span> Planning</div>
+        <div><span class="stage-dot working"></span> Working</div>
+        <div><span class="stage-dot completed"></span> Completed</div>
+      </div>
+
+      <div id="progressContainer" class="issue-grid"></div>
+    </section>
+
+    <section id="view-checklist" class="view hidden">
+      <div class="section-heading">
+        <div>
+          <h2>Before you start</h2>
+          <p>Use this checklist before working on an open-source issue.</p>
+        </div>
+      </div>
+
+      <div class="panel checklist-panel">
+        <div class="checklist-intro">
+          <span class="eyebrow">CONTRIBUTOR CHECKLIST</span>
+          <h3>Prepare before your first contribution</h3>
+          <p id="checklistCount" aria-live="polite">0 of 7 completed</p>
+        </div>
+
+        <div class="checklist-items">
+          <label class="check-item">
+            <input type="checkbox" data-check="issue">
+            <span><strong>Read the issue carefully</strong>
+              <small>Understand the problem, expected outcome, and any discussion.</small></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" data-check="duplicate">
+            <span><strong>Check for duplicate issues</strong>
+              <small>Look for related issues or an existing solution.</small></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" data-check="guide">
+            <span><strong>Read the contribution guide</strong>
+              <small>Follow the repository's contribution and code style rules.</small></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" data-check="readme">
+            <span><strong>Understand the repository</strong>
+              <small>Read the README and learn how the project is organised.</small></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" data-check="environment">
+            <span><strong>Set up the development environment</strong>
+              <small>Follow the documented installation and test steps.</small></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" data-check="discussion">
+            <span><strong>Ask questions when necessary</strong>
+              <small>Check whether the issue is available and clarify anything unclear.</small></span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" data-check="tests">
+            <span><strong>Plan to test your changes</strong>
+              <small>Learn how to run the project's tests before opening a pull request.</small></span>
+          </label>
+        </div>
+
+        <div class="checklist-actions">
+          <button id="resetChecklist" class="button secondary" type="button">
+            Reset checklist
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Built for beginners exploring open source.</p>
+      <p>Issue labels and suitability scores are guidance, not guarantees.</p>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
